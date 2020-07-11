@@ -1,25 +1,41 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
+import NavBar from "./components/NavigationCompnents/NavItems/NavItem";
+import Home from "./container/HomePage/home";
+import Order from "./components/Order/Order";
+import Items from "./components/ItemsCard/item/item";
+import SignupComponent from "./components/Registration/registration";
+import ValidateOtp from "./components/ValidateOtp/ValidateOtp";
+import LoginComponent from "./components/Login/Login";
+import { BrowserRouter } from "react-router-dom";
 
+import { Route } from "react-router-dom";
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <div>
+        <NavBar />
+
+        <Route exact path="/order">
+          <Order />
+        </Route>
+        <Route exact path="/register">
+          <SignupComponent />
+        </Route>
+        <Route exact path="/Login">
+          <LoginComponent />
+        </Route>
+        <Route
+          exact
+          path="/validate"
+          render={(props) => <ValidateOtp {...props} />}
+        ></Route>
+        <Route exact path="/">
+          <Home />
+          <Items />
+        </Route>
+      </div>
+    </BrowserRouter>
   );
 }
 

@@ -1,19 +1,50 @@
 import React, { Component } from "react";
-import { FormControl, Form, Button, Container } from "react-bootstrap";
+import {  Container, CardColumns, Card } from "react-bootstrap";
+import userService from "../../service/user-service";
 
+import NavBarLogged from "../../components/NavigationCompnents/LoggedInNav/NavBarLogged";
 class Order extends Component {
-  state = {};
+  state = {
+    items: [],
+    username:""
+  };
+  componentDidMount() {
+
+    userService.getAllUsers().then((res) => {
+      const items = res.data;
+      this.setState({ items });
+    });
+    console.log(this.state.items);
+  }
+  componentWillUnmount() {
+    this._isMounted = false;
+  
+  }
+
   render() {
     return (
+      <Container fluid>
+        <NavBarLogged />
       <Container>
-        <Form inline>
-          <FormControl
-            type="text"
-            placeholder="Search"
-            className="mr-md-12 mr-lg-12"
-          />
-          <Button variant="outline-success">Search</Button>
-        </Form>
+        
+        
+        <CardColumns>
+          {this.state.items.map((items) => (
+            <Card
+              key={items.email}
+              style={{
+                margin: "10px",
+                padding: "20px",
+                boxShadow: "1px 1px 1px 1px #ccc",
+              }}
+            >
+              <Card.Body>
+                <Card.Title>{items}</Card.Title>
+              </Card.Body>
+            </Card>
+          ))}
+        </CardColumns>
+      </Container>
       </Container>
     );
   }

@@ -1,6 +1,6 @@
 import React from "react";
 import "./Login.css";
-import { Container, Form, Button } from "react-bootstrap";
+import { Container, Form, Button, Nav } from "react-bootstrap";
 import { Row } from "react-bootstrap";
 import { Col } from "react-bootstrap";
 import { InputGroup } from "react-bootstrap";
@@ -10,7 +10,7 @@ import { Alert } from "react-bootstrap";
 import userService from "../../service/user-service";
 import { trackPromise } from "react-promise-tracker";
 import cookie from "react-cookies";
-
+import NavBar from "../NavigationCompnents/NavItems/NavItem";
 const LOGIN_SUCCESS = "login successful.";
 const LOGIN_ERROR = "Please try again later.";
 
@@ -73,18 +73,22 @@ export default class LoginComponent extends React.Component {
     if (errors.length > 0) {
       return;
     } else {
+      console.log(this.state);
       trackPromise(
         userService
           .login(this.state.email, this.state.password)
           .then((response) => {
+            console.log(response);
             if (response.status === 200) {
               this.setState({
                 loginSuccess: true,
                 loginError: false,
                 loginMessage: response.message,
               });
-              cookie.save("user_id", response.data.user_id);
-              cookie.save("secure_token", response.data.token);
+              cookie.save("username", response.data.username);
+              cookie.save("email", response.data.email);
+              cookie.save("firstname", response.data.firstname);
+              cookie.save("lastname", response.data.lastname);
             }
           })
       ).catch((err) => {
@@ -112,126 +116,128 @@ export default class LoginComponent extends React.Component {
       return (
         <Redirect
           to={{
-            pathname: "/",
-            state: {
-              isLoggedIn: true,
-            },
+            pathname: "/loggedin",
           }}
         />
       );
     return (
-      <Container>
-        <form
-          className="login-form"
-          onSubmit={this.submitLoginRequest}
-          noValidate
-        >
-          <Row>
-            <Col>
-              <h3>Sign In</h3>
-              <br />
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <Form.Group controlId="formLoginEmail">
-                <Form.Label>Email</Form.Label>
-                <Form.Control
-                  type="email"
-                  placeholder="Enter email"
-                  required
-                  value={this.state.email}
-                  onChange={this.handleEmailChange}
-                />
-                <Form.Text className="text-muted">
-                  We'll never share your email with anyone else.
-                </Form.Text>
-                <div className="invalid-feedback">
-                  Please provide a valid email
-                </div>
-              </Form.Group>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <Form.Group controlId="formLoginPassword">
-                <Form.Label>Password</Form.Label>
-                <InputGroup>
+      <Container fluid>
+        <NavBar />
+        <Container>
+          <form
+            className="login-form"
+            onSubmit={this.submitLoginRequest}
+            noValidate
+          >
+            <Row>
+              <Col>
+                <h3>Sign In</h3>
+                <br />
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <Form.Group controlId="formLoginEmail">
+                  <Form.Label>Email</Form.Label>
                   <Form.Control
-                    placeholder="Password"
-                    type={this.state.hiddenPassword ? "password" : "text"}
-                    pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-                    value={this.state.password}
-                    onChange={this.handlePasswordChange}
+                    type="email"
+                    placeholder="Enter email"
                     required
+                    value={this.state.email}
+                    onChange={this.handleEmailChange}
                   />
-                  <InputGroup.Append>
-                    <InputGroup.Text
-                      onClick={this.togglePassword}
-                      style={showiconstyle}
-                    >
-                      <i className="fa fa-eye" aria-hidden="true"></i>
-                    </InputGroup.Text>
-                    <InputGroup.Text
-                      onClick={this.togglePassword}
-                      style={hideiconstyle}
-                    >
-                      <i className="fa fa-eye-slash" aria-hidden="true"></i>
-                    </InputGroup.Text>
-                  </InputGroup.Append>
+                  <Form.Text className="text-muted">
+                    We'll never share your email with anyone else.
+                  </Form.Text>
                   <div className="invalid-feedback">
-                    Password must be 6 characters long It should contain a
-                    number and <br></br> contain , uppercase and lowercase
-                    letter
+                    Please provide a valid email
                   </div>
-                </InputGroup>
-              </Form.Group>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <a href="/">Forgot Password</a>
-            </Col>
-          </Row>
-          <br />
-          <Row>
-            <Col>
-              <Alert
-                variant="success"
-                className={!this.state.loginSuccess ? "hidden" : ""}
-              >
-                {this.state.loginMessage || LOGIN_SUCCESS}
-              </Alert>
-              <Alert
-                variant="danger"
-                className={!this.state.loginError ? "hidden" : ""}
-              >
-                {this.state.errorMessage || LOGIN_ERROR}
-              </Alert>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <Button
-                variant="outline-dark"
-                type="submit"
-                className="btn-signin"
-                size="lg"
-                block
-              >
-                Sign In
-              </Button>
-            </Col>
-          </Row>
-          <br />
-          <Row>
-            <Col>
-              <Link to="/register">
-                New to topgroceries.com? Create an account
-              </Link>
-            </Col>
-          </Row>
-        </form>
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <Form.Group controlId="formLoginPassword">
+                  <Form.Label>Password</Form.Label>
+                  <InputGroup>
+                    <Form.Control
+                      placeholder="Password"
+                      type={this.state.hiddenPassword ? "password" : "text"}
+                      pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                      value={this.state.password}
+                      onChange={this.handlePasswordChange}
+                      required
+                    />
+                    <InputGroup.Append>
+                      <InputGroup.Text
+                        onClick={this.togglePassword}
+                        style={showiconstyle}
+                      >
+                        <i className="fa fa-eye" aria-hidden="true"></i>
+                      </InputGroup.Text>
+                      <InputGroup.Text
+                        onClick={this.togglePassword}
+                        style={hideiconstyle}
+                      >
+                        <i className="fa fa-eye-slash" aria-hidden="true"></i>
+                      </InputGroup.Text>
+                    </InputGroup.Append>
+                    <div className="invalid-feedback">
+                      Password must be 6 characters long It should contain a
+                      number and <br></br> contain , uppercase and lowercase
+                      letter
+                    </div>
+                  </InputGroup>
+                </Form.Group>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <Nav.Link as={Link} to="/forgotPassword">
+                  Forgot Password
+                </Nav.Link>
+              </Col>
+            </Row>
+            <br />
+            <Row>
+              <Col>
+                <Alert
+                  variant="success"
+                  className={!this.state.loginSuccess ? "hidden" : ""}
+                >
+                  {this.state.loginMessage || LOGIN_SUCCESS}
+                </Alert>
+                <Alert
+                  variant="danger"
+                  className={!this.state.loginError ? "hidden" : ""}
+                >
+                  {this.state.errorMessage || LOGIN_ERROR}
+                </Alert>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <Button
+                  variant="outline-dark"
+                  type="submit"
+                  className="btn-signin"
+                  size="lg"
+                  block
+                >
+                  Sign In
+                </Button>
+              </Col>
+            </Row>
+            <br />
+            <Row>
+              <Col>
+                <Link to="/register">
+                  New to topgroceries.com? Create an account
+                </Link>
+              </Col>
+            </Row>
+          </form>
+        </Container>
       </Container>
     );
   }

@@ -1,11 +1,13 @@
 import React, { Component } from "react";
-import { Navbar, Nav, Form, Button, FormControl } from "react-bootstrap";
+import { Navbar, Nav } from "react-bootstrap";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
-import AuthService from "../../../service/AuthenticationService";
+import Cookies from "js-cookie";
 class NavItem extends Component {
   constructor(props) {
     super(props);
-    this.state = { isUserLogged: AuthService.isUserLoggedIn() };
+    this.state = {
+      isLoggedIn: Cookies.get("user_id"),
+    };
   }
 
   render() {
@@ -27,24 +29,10 @@ class NavItem extends Component {
             <Nav.Link as={Link} to="/">
               Home
             </Nav.Link>
-            {!this.state.isUserLogged && (
-              <Nav.Link as={Link} to="/Login">
-                Login
-              </Nav.Link>
-            )}
-            {this.state.isUserLogged && (
-              <Nav.Link as={Link} to="/order">
-                Order
-              </Nav.Link>
-            )}
+            <Nav.Link as={Link} to="/Login">
+              Login
+            </Nav.Link>
           </Nav>
-          {this.state.isUserLogged && (
-            <Form inline>
-              <FormControl type="text" placeholder="Search" />
-
-              <Button variant="outline-success">Search</Button>
-            </Form>
-          )}
         </Navbar.Collapse>
       </Navbar>
     );

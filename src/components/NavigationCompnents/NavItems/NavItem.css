@@ -1,0 +1,16 @@
+.logoutText {
+  display: block;
+  color: whitesmoke !important;
+  padding-left: 1% !important;
+}
+.hidden {
+  display: none;
+}
+
+.profile-dropdown:hover .profile-menu {
+  display: block;
+}
+
+.fa-user {
+  color: whitesmoke !important;
+}
